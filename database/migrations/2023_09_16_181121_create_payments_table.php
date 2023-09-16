@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->foreignId('amortization_id')->constrained();
             $table->foreignId('promoter_id')->constrained();
             $table->foreignId('profile_id')->constrained();
-
             $table->timestamps();
         });
     }

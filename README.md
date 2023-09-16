@@ -13,6 +13,14 @@
 
 `sail artisan migrate`
 
+The migrate:fresh command will drop all tables from the database and then execute the migrate command:
+
+`sail artisan migrate:fresh`
+
+`sail artisan migrate:fresh --seed`
+
+## ASSUMPTIONS
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
