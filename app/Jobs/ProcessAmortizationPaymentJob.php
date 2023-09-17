@@ -1,8 +1,6 @@
 <?php
 namespace App\Jobs;
 
-
-use App\Exceptions\ProfileNotFoundException;
 use App\Exceptions\ProjectNotFoundException;
 use App\Models\Amortization;
 use App\Models\Payment;
@@ -12,6 +10,7 @@ use App\Notifications\InsufficientFundsNotification;
 use App\Notifications\PaymentDelayedNotification;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +21,7 @@ use Illuminate\Support\Facades\Log;
 
 class ProcessAmortizationPaymentJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $amortization;
     protected $currentDate;
