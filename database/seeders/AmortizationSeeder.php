@@ -938,7 +938,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 2,
             ],
             [
-                'schedule_date' => '2023-09-31 17:17:01',
+                'schedule_date' => '2023-09-30 17:17:01',
                 'state' => 'pending',
                 'amount' => 1429,
                 'project_id' => 5,
@@ -1304,7 +1304,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 4,
             ],
             [
-                'schedule_date' => '2023-09-31 13:09:06',
+                'schedule_date' => '2023-09-30 13:09:06',
                 'state' => 'pending',
                 'amount' => 4591,
                 'project_id' => 1,
@@ -1346,7 +1346,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 5,
             ],
             [
-                'schedule_date' => '2023-09-31 18:31:54',
+                'schedule_date' => '2023-09-30 18:31:54',
                 'state' => 'pending',
                 'amount' => 4347,
                 'project_id' => 5,
@@ -2018,7 +2018,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 5,
             ],
             [
-                'schedule_date' => '2023-09-31 14:25:54',
+                'schedule_date' => '2023-09-30 14:25:54',
                 'state' => 'pending',
                 'amount' => 3267,
                 'project_id' => 6,
@@ -3260,7 +3260,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 7,
             ],
             [
-                'schedule_date' => '2023-09-31 22:00:27',
+                'schedule_date' => '2023-09-30 22:00:27',
                 'state' => 'pending',
                 'amount' => 1600,
                 'project_id' => 8,
@@ -4538,7 +4538,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 2,
             ],
             [
-                'schedule_date' => '2023-09-31 23:26:49',
+                'schedule_date' => '2023-09-30 23:26:49',
                 'state' => 'pending',
                 'amount' => 2589,
                 'project_id' => 3,
@@ -5786,7 +5786,7 @@ class AmortizationSeeder extends Seeder
                 'project_id' => 1,
             ],
             [
-                'schedule_date' => '2023-09-31 18:27:00',
+                'schedule_date' => '2023-09-30 18:27:00',
                 'state' => 'pending',
                 'amount' => 2486,
                 'project_id' => 7,
