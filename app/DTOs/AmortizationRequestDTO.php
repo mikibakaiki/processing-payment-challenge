@@ -10,8 +10,8 @@ class AmortizationRequestDTO
 
     public function __construct(array $parameters)
     {
-        $this->perPage = $parameters['per_page'];
-        $this->sortField = $parameters['sort_by'];
-        $this->sortOrder = $parameters['order'];
+        $this->perPage = $parameters['per_page'] ?? 10;
+        $this->sortField = $parameters['sort_by'] ?? 'id';
+        $this->sortOrder = $parameters['order'] ?? 'asc';
     }
 }
