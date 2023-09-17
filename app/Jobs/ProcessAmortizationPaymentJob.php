@@ -10,6 +10,7 @@ use App\Models\Profile;
 use App\Models\Project;
 use App\Notifications\InsufficientFundsNotification;
 use App\Notifications\PaymentDelayedNotification;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,18 +19,18 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
-class ProcessAmortization implements ShouldQueue
+class ProcessAmortizationPaymentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $amortization;
+    protected $currentDate;
 
-
-    public function __construct(Amortization $amortization)
+    public function __construct(Amortization $amortization, Carbon $currentDate)
     {
         $this->amortization = $amortization;
+        $this->currentDate = $currentDate;
     }
 
 
@@ -38,6 +39,7 @@ class ProcessAmortization implements ShouldQueue
         try {
             DB::transaction(function () {
                 $project = $this->getProjectWithPromoter();
+                Log::info("Project: " . $project);
                 $this->processAmortization($project);
             });
         } catch (\Exception $e) {
@@ -51,6 +53,7 @@ class ProcessAmortization implements ShouldQueue
     {
         try {
             $projectId = $this->amortization->project_id;
+            Log::info("ProjectId #" . $projectId);
             return Project::with('promoter')->findOrFail($projectId);
         } catch (ModelNotFoundException $e) {
             throw new ProjectNotFoundException('Project #' . $projectId . ' was not found.');
@@ -70,7 +73,10 @@ class ProcessAmortization implements ShouldQueue
     private function updateWalletBalanceAndAmortizationState($project)
     {
         $project->decrement('wallet_balance', $this->amortization->amount);
+        Log::info("Project balance = $project->wallet_balance");
         $this->amortization->update(['state' => 'paid']);
+        Log::
+            info("Amortization # $this->amortization->id has state: $this->amortization->state");
     }
 
     private function updateAssociatedPaymentsAndSendNotifications($project)
@@ -78,7 +84,7 @@ class ProcessAmortization implements ShouldQueue
         Payment::where('amortization_id', $this->amortization->id)
             ->update(['state' => 'paid']);
 
-        if ($this->amortization->schedule_date < now()) {
+        if ($this->amortization->schedule_date < $this->currentDate) {
             $this->sendPaymentDelayedNotifications($project);
         }
     }
@@ -91,16 +97,20 @@ class ProcessAmortization implements ShouldQueue
                 ->where('amortization_id', $this->amortization->id);
         })->get();
 
-        if ($profiles->isEmpty()) {
-            // No profiles were found. Throwing this exception.
-            throw new ProfileNotFoundException('No profile was found.');
-        }
+        Log::info("Profiles = $profiles");
+        // if ($profiles->isEmpty()) {
+        //     // No profiles were found. Throwing this exception.
+        //     throw new ProfileNotFoundException('No profile was found.');
+        // }
 
         foreach ($profiles as $profile) {
             $profile->notify(new PaymentDelayedNotification());
+            Log::info("Profile $profile was notified: PaymentDelayNotification");
         }
 
         $project->promoter->notify(new PaymentDelayedNotification());
+        Log::info("Promoter $project->promoter was notified: PaymentDelayNotification");
+
     }
 
     private function sendInsufficientFundsNotification($project)
