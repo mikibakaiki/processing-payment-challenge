@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\DTOs\AmortizationRequestDTO;
 use App\Http\Controllers\Controller;
 use App\Services\AmortizationService;
 use Illuminate\Http\Request;
@@ -73,13 +74,15 @@ class AmortizationController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = $request->get('per_page', 15); // default 15 items per page
-            $sortBy = $request->get('sort_by', 'id'); // default sort by id
-            $sortOrder = $request->get('sort_order', 'asc'); // default sort order is ascending
+            $amortizationRequestDTO = new AmortizationRequestDTO($request->all());
 
-            $amortizations = $this->amortizationService->getAllAmortizations($perPage, $sortBy, $sortOrder);
-
+            $amortizations = $this->amortizationService->getAllAmortizations(
+                $amortizationRequestDTO->perPage,
+                $amortizationRequestDTO->sortField,
+                $amortizationRequestDTO->sortOrder
+            );
             return response()->json($amortizations);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'An error occurred while fetching the amortizations.',
