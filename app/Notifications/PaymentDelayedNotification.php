@@ -10,9 +10,12 @@ class PaymentDelayedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct()
+    public $isPromoter;
+
+    public function __construct(bool $isPromoter)
     {
         //
+        $this->isPromoter = $isPromoter;
     }
 
 
@@ -25,6 +28,6 @@ class PaymentDelayedNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Your Payment Is Delayed')
-            ->view('emails.delayed_payment');
+            ->view('emails.delayed_payment', ['isPromoter' => $this->isPromoter]);
     }
 }

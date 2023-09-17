@@ -4,7 +4,7 @@
     <title>Payment Delayed</title>
 </head>
 <body>
-    <p>Dear Promoter,</p>
+    <p>Dear {{$isPromoter ? 'Promoter' : 'Profile User'}},</p>
     <p>We are writing to inform you that a payment has been delayed.</p>
     <p>Best regards,</p>
     <p>Your Company</p>

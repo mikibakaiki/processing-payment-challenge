@@ -53,7 +53,6 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
     {
         try {
             $projectId = $this->amortization->project_id;
-            Log::info("ProjectId #" . $projectId);
             return Project::with('promoter')->findOrFail($projectId);
         } catch (ModelNotFoundException $e) {
             throw new ProjectNotFoundException('Project #' . $projectId . ' was not found.');
@@ -104,11 +103,11 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
         // }
 
         foreach ($profiles as $profile) {
-            $profile->notify(new PaymentDelayedNotification());
+            $profile->notify(new PaymentDelayedNotification(false));
             Log::info("Profile $profile was notified: PaymentDelayNotification");
         }
 
-        $project->promoter->notify(new PaymentDelayedNotification());
+        $project->promoter->notify(new PaymentDelayedNotification(true));
         Log::info("Promoter $project->promoter was notified: PaymentDelayNotification");
 
     }
