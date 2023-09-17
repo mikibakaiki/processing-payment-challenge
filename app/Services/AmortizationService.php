@@ -48,7 +48,7 @@ class AmortizationService
     }
 
 
-    public function getAllAmortizations(int $perPage = 15, string $sortField = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
+    public function getAllAmortizations(int $perPage = 10, string $sortField = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
     {
         // Get all amortizations ordered by $sortField and $sortOrder, in pages of size $perPage
         return Amortization::orderBy($sortField, $sortOrder)->paginate($perPage);
