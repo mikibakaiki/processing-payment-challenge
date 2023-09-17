@@ -37,6 +37,7 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            Log::info("Processing job", ['job' => $this]);
             DB::transaction(function () {
                 $project = $this->getProjectWithPromoter();
                 Log::info("Project: " . $project);
@@ -95,12 +96,6 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
                 ->from('payments')
                 ->where('amortization_id', $this->amortization->id);
         })->get();
-
-        Log::info("Profiles = $profiles");
-        // if ($profiles->isEmpty()) {
-        //     // No profiles were found. Throwing this exception.
-        //     throw new ProfileNotFoundException('No profile was found.');
-        // }
 
         foreach ($profiles as $profile) {
             $profile->notify(new PaymentDelayedNotification(false));
