@@ -15,5 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/payAllDueAmortizations', [AmortizationController::class, 'payAllDueAmortizations']);
+    Route::get('/pay-all-due-amortizations', [AmortizationController::class, 'payAllDueAmortizations']);
+});
+
+Route::prefix('v1')->group(function () {
+    Route::get('/index', [AmortizationController::class, 'index']);
+});
+Route::prefix('v1')->group(function () {
+    Route::post('/check-batch-status', [AmortizationController::class, 'checkBatchStatus']);
+
 });
