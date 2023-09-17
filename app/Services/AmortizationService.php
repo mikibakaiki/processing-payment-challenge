@@ -38,9 +38,7 @@ class AmortizationService
 
             $batchId = $batch->id;
 
-            // Store the batch id or send it to the front end
-            // so that you can check its status later
-
+            // Return the batch id so that you can check its status later
             Log::info("Batch {$batchId} dispatched");
             return $batchId;
         } catch (\Exception $e) {
@@ -49,30 +47,10 @@ class AmortizationService
         }
     }
 
-    public function getAllAmortizations($perPage, $sortBy, $sortOrder)
+
+    public function getAllAmortizations(int $perPage = 15, string $sortField = 'id', string $sortOrder = 'asc'): LengthAwarePaginator
     {
-        $amortizations = DB::table('amortizations')
-            ->orderBy($sortBy, $sortOrder)
-            ->paginate($perPage);
-
-        return $amortizations;
-    }
-
-    // To use pagination for the collection
-    public function paginate(Collection $collection, $perPage, $pageName = 'page', $fragment = null)
-    {
-        $currentPage = Paginator::resolveCurrentPage($pageName);
-
-        return new LengthAwarePaginator(
-            $collection->forPage($currentPage, $perPage),
-            $collection->count(),
-            $perPage,
-            $currentPage,
-            [
-                'path' => Paginator::resolveCurrentPath(),
-                'pageName' => $pageName,
-                'fragment' => $fragment,
-            ]
-        );
+        // Get all amortizations ordered by $sortField and $sortOrder, in pages of size $perPage
+        return Amortization::orderBy($sortField, $sortOrder)->paginate($perPage);
     }
 }
