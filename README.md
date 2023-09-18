@@ -11,6 +11,7 @@ This project implements a payment system that processes amortizations and paymen
 -   The date that will be checked to see if an Amortization is overdue is being calculated at runtime, and will be the current date and time of the execution.
 -   An Amortization can only have two states: `pending` and `paid`.
 -   An amortization is considered `paid` only when its corresponding payment is successfully processed, and the amortization's state is updated from `pending` to `paid`.
+-   The database will always have data, before initializing the frontend page
 
 ## Setup
 
@@ -48,10 +49,15 @@ sail artisan migrate:fresh --seed
 
 ### Setting Up The Amortizations Page
 
-Having done all the steps in [Setting Up The Project](#setting-up-the-project), we can already check the
-`localhost/amortizations` page in our browser.
+Having done all the steps in [Setting Up The Project](#setting-up-the-project), we can now run the command that will start the frontend server:
 
-We'll be able to:
+```console
+npm install && npm run dev
+```
+
+To see the results, open a browser and go to `http://localhost/amortizations`.
+
+We are able to:
 
 -   See all the amortizations in the system
 -   Sort each column in ascending or descending order
@@ -229,17 +235,17 @@ The job handles the actual work of verifying if an amortization is due and if it
 
 ### Performance
 
-In this solution we are using jobs, one for each Amortization to be processed, and another for each email notification to be sent. This allows for processing information asynchronously, on background processes.
+In this solution we are using jobs, one for each Amortization to be processed, and another for each email notification to be sent. This allows for processing information asynchronously, on background processes, i.e., an API call can have a response in `milliseconds`, whilst the background process, that are in a Queue, can take `minutes`. For servers with millions of requests and users, this is a good approach.
 
-This allows for an API call to have a response in `milliseconds`, whilst the background process can take `minutes`. For servers with millions of requests and users, this is a good approach.
+For each request to the [pay-all-due-amortizations](#pay-all-due-amortizations) endpoint, the service will create a Batch, which will aggregate jobs.
 
-For each request to the [pay-all-due-amortizations](#pay-all-due-amortizations) endpoint, the service will create an array of jobs, and these jobs will then be [Batched](https://laravel.com/docs/10.x/queues#job-batching).
+Then, it reads one Amortization at a time (taking advantage of [`cursor`](https://laravel.com/docs/10.x/eloquent#cursors), which is more memory performant) and will create a Job.
 
-<!-- #### Tradeoff
+When there are enough jobs, of a predetermined size (we are using 100) the service will push all the jobs into the Batch, taking advantage of [Laravel's Job Batching](https://laravel.com/docs/10.x/queues#job-batching).
 
-There could still be an upgrade to performance to this solution: we could retrive data from the database in smaller chunks
-However, we are not using chunk. If you have a very large number of amortizations to process, and you want to use chunk to reduce the memory usage, you can modify the code to create a batch of jobs for each chunk and dispatch them separately. However, this will create multiple batches, and you will need to handle the completion and failure of each batch separately. -->
+This leverages the best of both worlds: reading only parts of the data at a time, which uses less memory, and using Job Batching, which allows for faster execution, reduces the overhead of dispatching individual jobs and the overhead of managing multiple batches, ensuring code consistency.
 
 ## Inspiration
 
 [Table Pagination](https://tailwindui.com/components/application-ui/navigation/pagination)
+[Benchmarks for data retrieval](https://janostlund.com/2021-12-26/eloquent-cursor-vs-chunk)
