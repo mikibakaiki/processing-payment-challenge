@@ -7,11 +7,12 @@ This project implements a payment system that processes amortizations and paymen
 ## Assumptions
 
 -   You have Docker and Docker-compose installed on your system. [Check Laravel's instructions for each OS](https://laravel.com/docs/10.x#laravel-and-docker)
--   The project wallet can never be negative
+-   You have nodejs and npm installed on your system.
+-   The project wallet can never be negative.
 -   The date that will be checked to see if an Amortization is overdue is being calculated at runtime and will be the current date and time of the execution.
 -   An Amortization can only have two states: `pending` and `paid`.
 -   An amortization is considered `paid` only when its corresponding payment is successfully processed, and the amortization's state is updated from `pending` to `paid`.
--   The database will always have data, before initializing the frontend page
+-   The database will always have data, before initializing the frontend page.
 
 ## Setup
 
