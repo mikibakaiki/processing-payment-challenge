@@ -16,6 +16,47 @@ This project implements a payment system that processes amortizations and paymen
 
 ## Setup
 
+### Env variables
+Please create your `.env` file before following with the setup. You can use the `.env.example` as a starting point.
+
+These were the variables that I've set:
+
+```console
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=<Maybe you already have, I don't think it's necessary>
+APP_DEBUG=true
+APP_URL=http://localhost
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=processing_payment_challenge
+DB_USERNAME=sail
+DB_PASSWORD=<some_password>
+
+QUEUE_CONNECTION=redis
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=redis
+FILESYSTEM_DISK=local
+SESSION_DRIVER=redis
+SESSION_LIFETIME=120
+
+REDIS_CLIENT=predis
+REDIS_HOST=redis
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_ENCRYPTION=null
+```
+
 ### Setting Up The Project
 
 This project is built with [Sail](https://laravel.com/docs/10.x/sail), a lightweight command-line interface for interacting with Laravel's default Docker development environment.
