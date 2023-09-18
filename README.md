@@ -248,3 +248,4 @@ This leverages the best of both worlds: reading only parts of the data at a time
 ## Inspiration
 
 [Table Pagination](https://tailwindui.com/components/application-ui/navigation/pagination)
+[Benchmarks for data retrieval](https://janostlund.com/2021-12-26/eloquent-cursor-vs-chunk)
