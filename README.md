@@ -25,6 +25,13 @@ First, we need to install the PHP dependencies.
 composer install
 ```
 
+⚠️ **NOTE**: if this command does not work - for me it didn't, at first - run the following command to install some possible missing dependencies:
+
+```console
+sudo apt-get install php8.1-xml php8.1-curl
+```
+
+
 Then, we need to generate an `APP_KEY`, which will be used on the [Env Variables](#env-variables)
 
 ```console
