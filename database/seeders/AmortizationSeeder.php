@@ -12,6 +12,7 @@ class AmortizationSeeder extends Seeder
      */
     public function run(): void
     {
+        // Data provided on the challenge description. I've only changed the dates' months to have more cases to test.
         $amortizations = [
             [
                 'schedule_date' => '2023-09-21 07:24:35',

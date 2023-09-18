@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 class PromoterSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds. Creates 10 Promoters.
      */
     public function run(): void
     {

@@ -15,8 +15,10 @@ class PaymentSeeder extends Seeder
      */
     public function run(): void
     {
+        // Get the paid amortizations
         $amortizations = Amortization::where('state', 'paid')->get();
 
+        // Convert them into a payment - already happened, won't be processed by us - and assign it a Profile and Promoter, randomly.
         foreach ($amortizations as $amortization) {
             $profile = Profile::inRandomOrder()->first();
             $promoter = Promoter::inRandomOrder()->first();

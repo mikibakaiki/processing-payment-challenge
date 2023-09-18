@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 class ProfileSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds. Creates 10 Profiles
      */
     public function run(): void
     {
