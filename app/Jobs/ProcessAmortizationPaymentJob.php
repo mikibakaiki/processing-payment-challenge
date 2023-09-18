@@ -33,13 +33,17 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
     }
 
 
+    /**
+     * Handle the job.
+     *
+     * This is the main method of the job and will be called when the job is processed by the queue.
+     */
     public function handle(): void
     {
         try {
-            Log::info("Processing job", ['job' => $this]);
+            Log::info("Processing job for amortization #$this->amortization");
             DB::transaction(function () {
                 $project = $this->getProjectWithPromoter();
-                Log::info("Project: " . $project);
                 $this->processAmortization($project);
             });
         } catch (\Exception $e) {
@@ -49,7 +53,13 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
         }
     }
 
-    private function getProjectWithPromoter()
+    /**
+     * Get the project associated with the amortization and its promoter.
+     *
+     * @throws ProjectNotFoundException if the project is not found.
+     * @return Project The project instance
+     */
+    private function getProjectWithPromoter(): Project
     {
         try {
             $projectId = $this->amortization->project_id;
@@ -59,7 +69,16 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
         }
     }
 
-    private function processAmortization($project)
+    /**
+     * Process the amortization payment.
+     *
+     * This method checks if the project has sufficient funds to make the payment.
+     * If so, it updates the wallet balance, amortization state, associated payments, and sends notifications.
+     * Otherwise, it sends an insufficient funds notification.
+     *
+     * @param Project $project The project instance
+     */
+    private function processAmortization($project): void
     {
         if ($project->wallet_balance >= $this->amortization->amount) {
             $this->updateWalletBalanceAndAmortizationState($project);
@@ -69,7 +88,15 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
         }
     }
 
-    private function updateWalletBalanceAndAmortizationState($project)
+    /**
+     * Update the project's wallet balance and the amortization state.
+     *
+     * This method decrements the project's wallet balance by the amount of the amortization and updates
+     * the amortization's state to 'paid'.
+     *
+     * @param Project $project The project instance
+     */
+    private function updateWalletBalanceAndAmortizationState($project): void
     {
         $project->decrement('wallet_balance', $this->amortization->amount);
         Log::info("Project balance = $project->wallet_balance");
@@ -78,7 +105,15 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
             info("Amortization # $this->amortization->id has state: $this->amortization->state");
     }
 
-    private function updateAssociatedPaymentsAndSendNotifications($project)
+    /**
+     * Update the state of all payments associated with the amortization and send notifications.
+     *
+     * This method updates the state of all payments associated with the amortization to 'paid'.
+     * If the schedule date of the amortization is earlier than the current date, it sends payment delayed notifications.
+     *
+     * @param Project $project The project instance
+     */
+    private function updateAssociatedPaymentsAndSendNotifications($project): void
     {
         Payment::where('amortization_id', $this->amortization->id)
             ->update(['state' => 'paid']);
@@ -88,8 +123,17 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
         }
     }
 
-    private function sendPaymentDelayedNotifications($project)
+    /**
+     * Send payment delayed notifications to all profiles associated with the amortization and the project's promoter.
+     *
+     * This method sends a payment delayed notification to all profiles associated with the amortization and the project's promoter.
+     *
+     * @param Project $project The project instance
+     */
+    private function sendPaymentDelayedNotifications($project): void
     {
+        // The subquery selects the 'profile_id' from the 'payments' table where the amortization_id correspondss to the current amortization id.
+        // The main query will select all the profiles where their 'id' in is the list returned by the subquerry.
         $profiles = Profile::whereIn('id', function ($query) {
             $query->select('profile_id')
                 ->from('payments')
@@ -106,7 +150,12 @@ class ProcessAmortizationPaymentJob implements ShouldQueue
 
     }
 
-    private function sendInsufficientFundsNotification($project)
+    /**
+     * Send insufficient funds notification to the project's promoter.
+     *
+     * @param Project $project The project instance
+     */
+    private function sendInsufficientFundsNotification($project): void
     {
         $project->promoter->notify(new InsufficientFundsNotification());
     }
