@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AmortizationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/amortizations', function () {
+    return view('amortizations');
 });

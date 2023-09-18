@@ -6,7 +6,8 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
-
+import AmortizationsTable from './components/AmortizationsTable.vue'
+import Pagination from './components/Pagination.vue'
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
  * registering components with the application instance so they are ready
@@ -15,9 +16,10 @@ import { createApp } from 'vue';
 
 const app = createApp({});
 
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
-
+// import ExampleComponent from './components/ExampleComponent.vue';
+// app.component('example-component', ExampleComponent);
+app.component('amortizations-table', AmortizationsTable);
+app.component('pagination', Pagination)
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
