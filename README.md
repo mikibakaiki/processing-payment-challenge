@@ -7,11 +7,84 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# Laravel Payment Processing
+
+This project implements a payment system that processes amortizations and payments, ensuring that payments are correctly handled.
+
+## Assumptions
+
+-   You have Docker and Docker-compose installed on your system. [Check Laravel's instructions for each OS](https://laravel.com/docs/10.x#laravel-and-docker)
+
+-   The project wallet can never be negative
+-   The date that will be checked to see if an Amortization is overdue is being calculated at runtime, and will be the current date and time of the execution.
+
+## Database Relations
+
+-   Each Amortization is associated with one Project.
+-   Each Amortization can have multiple Payments associated with it.
+-   Each Payment is associated with one Amortization.
+-   Each Payment is associated with one Profile.
+-   Each Payment is associated with one Promoter.
+-   Each Profile can have multiple Payments associated with it.
+-   Each Project can have multiple Amortizations associated with it.
+-   Each Project is associated with one Promoter.
+-   Each Promoter can have multiple Projects associated with it.
+-   Each Promoter can have multiple Payments associated with it.
+
+```mermaid
+classDiagram
+    Project "1" --> "*" Amortization : has
+    Project "1" --> "1" Promoter : belongsTo
+    Promoter "1" --> "*" Project : has
+    Promoter "1" --> "*" Payment : has
+    Amortization "1" --> "*" Payment : has
+    Payment --> Amortization : belongsTo
+    Payment --> Promoter : belongsTo
+    Payment --> Profile : belongsTo
+
+    class Project {
+        +id: int
+        +name: string
+        +wallet_balance: double
+    }
+
+    class Promoter {
+        +id: int
+        +name: string
+        +email: string
+    }
+
+    class Amortization {
+        +id: int
+        +schedule_date: datetime
+        +state: string
+        +amount: double
+    }
+
+    class Payment {
+        +id: int
+        +amount: double
+        +state: string
+    }
+
+    class Profile {
+        +id: int
+        +name: string
+        +email: string
+    }
+```
+
+## Setup
+
+This project is built with [Sail](https://laravel.com/docs/10.x/sail), a light-weight command-line interface for interacting with Laravel's default Docker development environment.
+
 ## Useful commands
 
 `alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'`
 
 `sail artisan migrate`
+
+`sail up -d`
 
 The migrate:fresh command will drop all tables from the database and then execute the migrate command:
 
@@ -19,62 +92,27 @@ The migrate:fresh command will drop all tables from the database and then execut
 
 `sail artisan migrate:fresh --seed`
 
-## ASSUMPTIONS
+To run the queue on the database:
 
-## About Laravel
+add this to the `.env` file `QUEUE_CONNECTION=database`
+`sail artisan queue:table`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+`sail artisan migrate`
 
--   [Simple, fast routing engine](https://laravel.com/docs/routing).
--   [Powerful dependency injection container](https://laravel.com/docs/container).
--   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
--   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
--   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
--   [Robust background job processing](https://laravel.com/docs/queues).
--   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+`sail artisan queue:work redis`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+`./vendor/bin/sail composer require predis/predis` - to install predis
 
-## Learning Laravel
+`sail down`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+`sysctl vm.overcommit_memory=1`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+`sail artisan queue:work redis --max-jobs=100`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Performance
 
-## Laravel Sponsors
+**Note:** In this code, we are not using chunk. If you have a very large number of amortizations to process, and you want to use chunk to reduce the memory usage, you can modify the code to create a batch of jobs for each chunk and dispatch them separately. However, this will create multiple batches, and you will need to handle the completion and failure of each batch separately.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Inspiration
 
-### Premium Partners
-
--   **[Vehikl](https://vehikl.com/)**
--   **[Tighten Co.](https://tighten.co)**
--   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
--   **[64 Robots](https://64robots.com)**
--   **[Cubet Techno Labs](https://cubettech.com)**
--   **[Cyber-Duck](https://cyber-duck.co.uk)**
--   **[Many](https://www.many.co.uk)**
--   **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
--   **[DevSquad](https://devsquad.com)**
--   **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
--   **[OP.GG](https://op.gg)**
--   **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
--   **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[Table Pagination](https://tailwindui.com/components/application-ui/navigation/pagination)
