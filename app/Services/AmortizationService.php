@@ -4,11 +4,15 @@ namespace App\Services;
 
 use App\DTOs\AmortizationRequestDTO;
 use App\Jobs\ProcessAmortizationPaymentJob;
+use App\Mail\BatchFailedMail;
+use App\Mail\BatchFinishedMail;
 use App\Models\Amortization;
-use Bus;
 use Carbon\Carbon;
+use Illuminate\Bus\Batch;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AmortizationService
 {
@@ -28,7 +32,18 @@ class AmortizationService
             $chunkSize = 100;
 
             // Create a batch of jobs, that allows a job to fail and continues processing the remaining jobs.
-            $batch = Bus::batch([])->allowFailures()->dispatch();
+            $batch = Bus::batch([])
+                ->then(function (Batch $batch) {
+                    // This will be executed when all jobs in the batch have completed successfully
+                    Mail::to('admin@example.com')->send(new BatchFinishedMail($batch));
+                })
+                ->catch(function (Batch $batch) {
+                    // This will be executed only when the whole batch fails
+                    // This is because we are using allowFailures()
+                    Mail::to('admin@example.com')->send(new BatchFailedMail($batch));
+                })
+                ->allowFailures()
+                ->dispatch();
 
             $jobs = [];
             $jobCounter = 0;

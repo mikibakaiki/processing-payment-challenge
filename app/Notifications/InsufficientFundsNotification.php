@@ -24,7 +24,7 @@ class InsufficientFundsNotification extends Notification implements ShouldQueue
     /**
      * Send an email notification due to insufficient funds
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('You Have Insufficient Funds')

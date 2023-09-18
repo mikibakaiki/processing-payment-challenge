@@ -27,7 +27,7 @@ class PaymentDelayedNotification extends Notification implements ShouldQueue
     /**
      * Send an email notification due to delayed payment
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Your Payment Is Delayed')
