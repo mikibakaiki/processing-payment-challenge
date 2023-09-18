@@ -25,7 +25,7 @@
       <div>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
           <a @click="changePage(data.first_page)"
-            :class="!data.prev_page_url ? 'pointer-events-none relative inline-flex items-center rounded-l-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0' : 'relative inline-flex items-center rounded-l-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0'"
+            :class="!data.prev_page_url ? 'pointer-events-none relative inline-flex items-center rounded-l-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0 w-12' : 'cursor-pointer relative inline-flex items-center rounded-l-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0 w-12'"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
@@ -34,13 +34,13 @@
           <a
         v-for="page in pages"
         :key="page"
-        :class="page === data.current_page ? 'relative z-10 inline-flex items-center bg-gop-yellow/75 px-5 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:text-gop-blue' : 'relative inline-flex items-center px-5 py-2 text-sm font-semibold text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0'"
+        :class="page === data.current_page ? 'cursor-pointer relative z-10 inline-flex items-center bg-gop-yellow/75 p-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-gray-300 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:text-gop-blue w-12 justify-center' : 'cursor-pointer relative inline-flex items-center p-3 py-2 text-sm font-semibold text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0 w-12 justify-center'"
         @click.prevent="changePage(page)"
       >
         {{ page }}
       </a>
           <a @click="changePage(data.last_page)"
-            :class="!data.next_page_url ? 'pointer-events-none relative inline-flex items-center rounded-r-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0' : 'relative inline-flex items-center rounded-r-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0'"
+            :class="!data.next_page_url ? 'pointer-events-none relative inline-flex items-center rounded-r-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0 w-12' : 'cursor-pointer relative inline-flex items-center rounded-r-md px-3 py-3 text-gop-blue ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:z-20 focus:outline-offset-0 w-12'"
           >
             <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
