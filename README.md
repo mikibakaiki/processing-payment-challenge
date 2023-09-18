@@ -84,7 +84,7 @@ sysctl vm.overcommit_memory=1
 
 It sets the memory overcommit behavior to allow all memory allocations, regardless of the current status of memory.
 
-For more options Queues, visit [Laravel's official documentation](https://laravel.com/docs/10.x/queues#main-content)
+For more Queue options, visit [Laravel's official documentation](https://laravel.com/docs/10.x/queues#main-content)
 
 ### Shutting Down
 
@@ -231,7 +231,7 @@ The job handles the actual work of verifying if an amortization is due and if it
 
 In this solution we are using jobs, one for each Amortization to be processed, and another for each email notification to be sent. This allows for processing information asynchronously, on background processes.
 
-This allows for an API call to have a response in `ms`, whilst the background process can take `minutes`. For servers with millions of requests and users, this is a good approach.
+This allows for an API call to have a response in `milliseconds`, whilst the background process can take `minutes`. For servers with millions of requests and users, this is a good approach.
 
 For each request to the [pay-all-due-amortizations](#pay-all-due-amortizations) endpoint, the service will create an array of jobs, and these jobs will then be [Batched](https://laravel.com/docs/10.x/queues#job-batching).
 
