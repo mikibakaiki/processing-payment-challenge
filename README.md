@@ -8,7 +8,7 @@ This project implements a payment system that processes amortizations and paymen
 
 -   You have Docker and Docker-compose installed on your system. [Check Laravel's instructions for each OS](https://laravel.com/docs/10.x#laravel-and-docker)
 -   The project wallet can never be negative
--   The date that will be checked to see if an Amortization is overdue is being calculated at runtime, and will be the current date and time of the execution.
+-   The date that will be checked to see if an Amortization is overdue is being calculated at runtime and will be the current date and time of the execution.
 -   An Amortization can only have two states: `pending` and `paid`.
 -   An amortization is considered `paid` only when its corresponding payment is successfully processed, and the amortization's state is updated from `pending` to `paid`.
 -   The database will always have data, before initializing the frontend page
@@ -17,7 +17,7 @@ This project implements a payment system that processes amortizations and paymen
 
 ### Setting Up The Project
 
-This project is built with [Sail](https://laravel.com/docs/10.x/sail), a light-weight command-line interface for interacting with Laravel's default Docker development environment.
+This project is built with [Sail](https://laravel.com/docs/10.x/sail), a lightweight command-line interface for interacting with Laravel's default Docker development environment.
 
 Sail is a dependency of Laravel, as is installed in the `vendor/bin` directory. Therefore, to execute it, we would have to write a lot. So we create an alias to execute it with the command `sail`
 
@@ -79,10 +79,10 @@ If there are any jobs, the queue will process them. If there are no more jobs, t
 If you want to start the queue with a limit to the number of jobs it should run - it may be useful for testing and to see what is actually going on - use:
 
 ```console
-sail artisan queue:work redis --max-jobs=100`
+sail artisan queue:work redis --max-jobs=100
 ```
 
-:warning: **NOTE:** I had memory issues when trying to run my queue - i'm using Ubuntu 22.04 in WSL2. If you find the same problem, run this command:
+:warning: **NOTE:** I had memory issues when trying to run my queue - I'm using Ubuntu 22.04 in WSL2. If you find the same problem, run this command:
 
 ```console
 sysctl vm.overcommit_memory=1
@@ -96,7 +96,7 @@ For more Queue options, visit [Laravel's official documentation](https://laravel
 
 If you have the [Queue running](#running-the-queue), don't forget to terminate it using `Ctrl + C`.
 
-To shutdown, simply run the command:
+To shut down, simply run the command:
 
 ```console
 sail stop
@@ -137,10 +137,10 @@ curl --location 'http://localhost:80/api/v1/check-batch-status/' \
 
 This endpoint returns all the amortizations. It allows for four arguments:
 
--   `page`: the page number you want. Default is `1`.
--   `per_page`: the number of elements per page. Default is `10`.
--   `order`: the sorting order for a column. Can be `asc` or `desc`. Default is `asc`.
--   `sort_by`: the column on which to sort. Default is `id`.
+-   `page`: the page number you want. The default is `1`.
+-   `per_page`: the number of elements per page. The default is `10`.
+-   `order`: the sorting order for a column. Can be `asc` or `desc`. The default is `asc`.
+-   `sort_by`: the column on which to sort. The default is `id`.
 
 This is the endpoint called by the Amortizations Page, served at `http://localhost/amortizations`
 
@@ -219,7 +219,7 @@ We have 6 containers in total:
 
 ## Basic Architecture and Performance
 
-There are three main parts in this solution.
+There are three main parts to this solution.
 
 ### Controller
 
@@ -235,7 +235,7 @@ The job handles the actual work of verifying if an amortization is due and if it
 
 ### Performance
 
-In this solution we are using jobs, one for each Amortization to be processed, and another for each email notification to be sent. This allows for processing information asynchronously, on background processes, i.e., an API call can have a response in `milliseconds`, whilst the background process, that are in a Queue, can take `minutes`. For servers with millions of requests and users, this is a good approach.
+In this solution, we are using jobs, one for each Amortization to be processed, and another for each email notification to be sent. This allows for processing information asynchronously, on background processes, i.e., an API call can have a response in `milliseconds`, whilst the background process, that are in a Queue, can take `minutes`. For servers with millions of requests and users, this is a good approach.
 
 For each request to the [pay-all-due-amortizations](#pay-all-due-amortizations) endpoint, the service will create a Batch, which will aggregate jobs.
 
