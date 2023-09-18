@@ -6,8 +6,9 @@ This project implements a payment system that processes amortizations and paymen
 
 ## Assumptions
 
--   You have Docker and Docker-compose installed on your system. [Check Laravel's instructions for each OS](https://laravel.com/docs/10.x#laravel-and-docker)
--   You have nodejs and npm installed on your system.
+-   You have `PHP` and `composer` installed on your system
+-   You have `Docker` and `docker-compose` installed on your system. [Check Laravel's instructions for each OS](https://laravel.com/docs/10.x#laravel-and-docker)
+-   You have `nodejs` and `npm` installed on your system.
 -   The project wallet can never be negative.
 -   The date that will be checked to see if an Amortization is overdue is being calculated at runtime and will be the current date and time of the execution.
 -   An Amortization can only have two states: `pending` and `paid`.
@@ -16,7 +17,21 @@ This project implements a payment system that processes amortizations and paymen
 
 ## Setup
 
-### Env variables
+### Installing Dependencies
+
+First, we need to install the PHP dependencies.
+
+```console
+composer install
+```
+
+Then, we need to generate an `APP_KEY`, which will be used on the [Env Variables](#env-variables)
+
+```console
+php artisan key:generate
+```
+
+### Env Variables
 Please create your `.env` file before following with the setup. You can use the `.env.example` as a starting point.
 
 These were the variables that I've set:
@@ -24,7 +39,7 @@ These were the variables that I've set:
 ```console
 APP_NAME=Laravel
 APP_ENV=local
-APP_KEY=<Maybe you already have, I don't think it's necessary>
+APP_KEY=<use here the generated key>
 APP_DEBUG=true
 APP_URL=http://localhost
 
