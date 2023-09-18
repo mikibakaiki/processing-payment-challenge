@@ -24,37 +24,53 @@ class AmortizationService
             $currentDate = Carbon::now();
             Log::info("Current Date: $currentDate");
 
+            // Define chunk size to batch
+            $chunkSize = 100;
+
+            // Create a batch of jobs, that allows a job to fail and continues processing the remaining jobs.
+            $batch = Bus::batch([])->allowFailures()->dispatch();
+
+            $jobs = [];
+            $jobCounter = 0;
+
             // Get all amortizations eligible: due date is <= than current data && state != paid
+            // Using cursor uses less memory
             $amortizations = Amortization::where('schedule_date', '<=', $currentDate)
                 ->where('state', '!=', 'paid')
-                ->get();
+                ->cursor();
 
-            if ($amortizations->isEmpty()) {
+            foreach ($amortizations as $amortization) {
+                // Add a new Job to the jobs array
+                $jobs[] = new ProcessAmortizationPaymentJob($amortization, $currentDate);
+                $jobCounter++;
+
+                // Add jobs to batch in chunks
+                if ($jobCounter % $chunkSize === 0) {
+                    $batch->add($jobs);
+                    $jobs = [];
+                }
+            }
+
+            // Add remaining jobs to batch
+            if (!empty($jobs)) {
+                $batch->add($jobs);
+            }
+
+            if ($jobCounter === 0) {
                 Log::info("No amortizations to process.");
                 return null;
             }
 
-            // Iterate through the $amortizations collenction and create a job with each amortization and the currentDate
-            // At the end, we transform the $amortizations collection into an array
-            // At the end, we will have an array of ProcessAmortizationPaymentJob, each containing a different amortization
-            $jobs = $amortizations->map(function ($amortization) use ($currentDate) {
-                return new ProcessAmortizationPaymentJob($amortization, $currentDate);
-            })->toArray();
-
-            // Create a batch of jobs, that allows a job to fail and continues processing the remaining jobs.
-            $batch = Bus::batch($jobs)->allowFailures()->dispatch();
-
             $batchId = $batch->id;
+            Log::info("Batch {$batchId} dispatched");
 
             // Return the batch id so that we can check its status later
-            Log::info("Batch {$batchId} dispatched");
             return $batchId;
         } catch (\Exception $e) {
             Log::error('An error occurred while dispatching the batch: ' . $e->getMessage());
             throw $e;
         }
     }
-
 
     /**
      * Retrieves all amortizations based on the specified request and returns a paginated list.
