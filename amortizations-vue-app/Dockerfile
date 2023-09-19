@@ -3,7 +3,6 @@ FROM node:16
 # Set the working directory
 WORKDIR /vite-app
 
-# Install dependencies
 COPY ./package*.json .
 RUN npm install && \
     ./node_modules/.bin/vite --version
