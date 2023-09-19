@@ -93,6 +93,18 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
+    vite:
+        build:
+            context: ./amortizations-vue-app
+            dockerfile: Dockerfile
+        volumes:
+            - ./amortizations-vue-app:/vite-app
+        working_dir: /vite-app
+        command: npm run dev
+        ports:
+            - '3000:3000'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
