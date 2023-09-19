@@ -214,6 +214,10 @@ Here's a curl request to use it:
 curl --location 'http://localhost/api/v1/index?page=3&per_page=50&order=desc&sort_by=schedule_date'
 ```
 
+
+You can try all these requests on [Hoppscotch.io](https://hoppscotch.io/)!
+
+
 ## Database Relations
 
 -   Each Amortization is associated with one Project.
