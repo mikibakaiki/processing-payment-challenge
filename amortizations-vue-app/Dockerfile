@@ -1,14 +1,15 @@
 FROM node:16
 
 # Set the working directory
-WORKDIR /amortizations-vue-app
+WORKDIR /vite-app
 
-COPY ./amortizations-vue-app/package*.json ./
-
-RUN npm install
+# Install dependencies
+COPY ./package*.json .
+RUN npm install && \
+    ./node_modules/.bin/vite --version
 
 # Copy the rest of the application
-COPY ./amortizations-vue-app ./
+COPY . .
 
 # The port that Vite uses
 EXPOSE 3000

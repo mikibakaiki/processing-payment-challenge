@@ -99,12 +99,11 @@ services:
             dockerfile: Dockerfile
         volumes:
             - ./amortizations-vue-app:/vite-app
-        working_dir: /vite-app
-        command: npm run dev
         ports:
             - '3000:3000'
         networks:
             - sail
+
 networks:
     sail:
         driver: bridge
