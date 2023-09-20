@@ -16,12 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('/pay-all-due-amortizations', [AmortizationController::class, 'payAllDueAmortizations']);
-});
-
-Route::prefix('v1')->group(function () {
+    Route::post('/check-batch-status', [AmortizationController::class, 'checkBatchStatus']);
     Route::get('/index', [AmortizationController::class, 'index']);
 });
-Route::prefix('v1')->group(function () {
-    Route::post('/check-batch-status', [AmortizationController::class, 'checkBatchStatus']);
 
-});
+# debugging cors
+Route::options('/{any}', function() {
+    \Log::info('Headers:', request()->headers->all());
+    return response('', 200);
+})->where('any', '.*');

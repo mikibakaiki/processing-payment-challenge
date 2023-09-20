@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AmortizationController;
+use App\Http\Controllers\CaddyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/amortizations', function () {
-//     return view('amortizations');
-// });
+Route::get('/caddy-check', [CaddyController::class, 'check']);
+
+# debugging cors
+Route::options('/{any}', function() {
+    \Log::info('Headers:', request()->headers->all());
+    return response('', 200);
+})->where('any', '.*');
