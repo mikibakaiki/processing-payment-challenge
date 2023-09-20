@@ -1,5 +1,5 @@
 services:
-    laravel.test:
+    laravel:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2
             dockerfile: Dockerfile
@@ -59,7 +59,7 @@ services:
         networks:
             - sail
         ports:
-        - "8080:80"
+        - "9090:9090"
     redis:
         image: 'redis:alpine'
         ports:
@@ -97,8 +97,8 @@ services:
         build:
             context: ./amortizations-vue-app
             dockerfile: Dockerfile
-        volumes:
-            - ./amortizations-vue-app:/vite-app
+        # volumes:
+        #     - ./amortizations-vue-app:/vite-app
         ports:
             - '5173:5173'
         networks:
