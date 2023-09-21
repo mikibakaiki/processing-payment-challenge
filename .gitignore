@@ -17,3 +17,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+amortizations-vue-app/amortSeed.json
+amortizations-vue-app/gop-challenge-firebase.json
+amortizations-vue-app/.firebase/**
