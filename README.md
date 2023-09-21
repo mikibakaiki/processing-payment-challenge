@@ -111,22 +111,6 @@ The `migrate:fresh` command will drop all tables from the database and then exec
 sail artisan migrate:fresh --seed
 ```
 
-### Setting Up The Amortizations Page
-
-Having done all the steps in [Setting Up The Project](#setting-up-the-project), we can now run the command that will start the frontend server:
-
-```console
-npm install && npm run dev
-```
-
-To see the results, open a browser and go to `http://localhost/amortizations`.
-
-We are able to:
-
--   See all the amortizations in the system
--   Sort each column in ascending or descending order
--   Set different page sizes
--   Check each page with pagination.
 
 ### Running the Queue
 
@@ -217,6 +201,17 @@ curl --location 'http://localhost/api/v1/index?page=3&per_page=50&order=desc&sor
 
 You can try all these requests on [Hoppscotch.io](https://hoppscotch.io/)!
 
+## Front End Webpage
+
+Head to `http://localhost:5173` and you can see the front end webpage.
+
+We are able to:
+
+-   See all the amortizations in the system
+-   Sort each column in ascending or descending order
+-   Set different page sizes
+-   Check each page with pagination.
+
 
 ## Database Relations
 
@@ -276,7 +271,7 @@ classDiagram
 
 ## Containers
 
-We have 6 containers in total:
+We have 8 containers in total:
 
 1. The server for the app
 2. MySql database
@@ -284,6 +279,8 @@ We have 6 containers in total:
 4. Mailpit, which allows us to view the email notifications that will be sent. Available at `http://localhost:8025/`
 5. Redis, which handles the queues.
 6. Redis Commander, a Redis UI. Available at `http://localhost:6379/`
+7. Vite, which is running the Vue app. Available at `http://localhost:5173/`
+8. Caddy, which allows for https with Laravel [OPTIONAL - was an experiment]
 
 ## Basic Architecture and Performance
 
